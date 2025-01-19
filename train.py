@@ -1,3 +1,4 @@
+# fmt: off
 import torch
 import argparse
 
@@ -49,8 +50,7 @@ parser.add_argument('--rho', default=0.1, type=float)                           
 parser.add_argument('--gamma', default=1.0, type=float)                                                    # select the coefficient for the correction of SAM
 parser.add_argument('--epsilon', default=0.01, type=float)                                                 # select the minimal value for avoiding zero-division
 
-parser.add_argument('--method', choices=['FedAvg', 'FedCM', 'FedDyn', 'SCAFFOLD', 'FedAdam', 'FedProx', 'FedSAM', 'MoFedSAM', \
-                                         'FedGamma', 'FedSpeed', 'FedSMOO'], type=str, default='FedAvg')
+parser.add_argument('--method', type=str, default='FedAvg')
                                          
 args = parser.parse_args()
 print(args)
@@ -117,10 +117,11 @@ if __name__=='__main__':
         server_func = FedSpeed
     elif args.method == 'FedSMOO':
         server_func = FedSMOO
+    elif args.method == 'FedFGAC':
+        server_func = FedFGAC
     else:
         raise NotImplementedError('not implemented method yet')
     
     _server = server_func(device=device, model_func=model_func, init_model=init_model, init_par_list=init_par_list,
                           datasets=data_obj, method=args.method, args=args)
     _server.train()
-    
